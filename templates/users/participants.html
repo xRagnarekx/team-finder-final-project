@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Участники{% endblock %}
+
+{% block content %}
+    <main class="participants-container">
+        <div class="project-header">
+            <h1 class="project-title">Участники платформы</h1>
+            <p class="project-subtitle">Найдите единомышленников для вашего проекта</p>
+        </div>
+
+        <div class="participants-filter"
+             style="margin-bottom: 30px; text-align: center; gap: 10px; display: flex; justify-content: center;">
+            <a href="?sort=new" class="black-button"
+               style="{% if sort_by != 'name' %}background-color: var(--accent);{% else %}background-color: gray;{% endif %}">
+                Сначала новые
+            </a>
+            <a href="?sort=name" class="black-button"
+               style="{% if sort_by == 'name' %}background-color: var(--accent);{% else %}background-color: gray;{% endif %}">
+                По алфавиту
+            </a>
+        </div>
+
+        <div class="projects-grid">
+            {% for participant in page_obj %}
+                <div class="participant-card"
+                     style="text-align: center; display: flex; flex-direction: column; align-items: center;">
+
+                    {% if participant.profile.avatar %}
+                        <img src="{{ participant.profile.avatar.url }}" alt="Аватар" class="participant-avatar"
+                             style="margin-bottom: 16px;">
+                    {% else %}
+                        <img src="{% static 'images/default-avatar.png' %}" alt="Аватар по умолчанию"
+                             class="participant-avatar" style="margin-bottom: 16px;">
+                    {% endif %}
+
+                    <h3 style="margin: 0 0 8px 0; font-size: 20px; color: #111827;">
+                        {{ participant.first_name|default:participant.username }} {{ participant.last_name }}
+                    </h3>
+
+                    <p style="color: #6B7280; font-size: 14px; margin-bottom: 24px; flex-grow: 1;">
+                        {{ participant.profile.about|truncatechars:60|default:"Пользователь пока ничего не рассказал о себе." }}
+                    </p>
+
+                    <a href="{% url 'users:profile_detail' participant.pk %}" class="black-button"
+                       style="width: 100%; text-align: center; box-sizing: border-box;">
+                        Посмотреть профиль
+                    </a>
+                </div>
+                {% empty %}
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #6B7280;">
+                    <p>Пользователи не найдены.</p>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="pagination" style="text-align: center; margin-top: 30px;">
+            {% if page_obj.has_previous %}
+                <a href="?page=1&sort_by={{ sort_by }}">&laquo; первая</a>
+                <a href="?page={{ page_obj.previous_page_number }}&sort_by={{ sort_by }}">предыдущая</a>
+            {% endif %}
+
+            <span class="current">
+        Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+    </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&sort_by={{ sort_by }}">следующая</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}&sort_by={{ sort_by }}">последняя &raquo;</a>
+            {% endif %}
+        </div>
+    </main>
+{% endblock %}

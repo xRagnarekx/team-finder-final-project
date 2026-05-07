@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная страница - TeamFinder{% endblock %}
+
+{% block content %}
+    <main class="project-container">
+        <div class="project-header">
+            <h1 class="project-title">Все проекты</h1>
+            <p class="project-subtitle">Платформа для поиска команды и совместной работы над проектами</p>
+        </div>
+
+        <div class="projects-grid">
+            {% for project in page_obj %}
+                {% include 'includes/project-card.html' %}
+                {% empty %}
+                {% url 'projects:create_project' as create_url %}
+                {% include 'includes/empty-project-card.html' with empty_title="Проектов пока нет" empty_message="Будь первым, кто добавит свой проект!" button_link=create_url button_text="Создать проект" %}
+            {% endfor %}
+        </div>
+        <div class="pagination" style="text-align: center; margin-top: 30px;">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; первая</a>
+                <a href="?page={{ page_obj.previous_page_number }}">предыдущая</a>
+            {% endif %}
+
+            <span class="current">
+        Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+    </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">следующая</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">последняя &raquo;</a>
+            {% endif %}
+        </div>
+    </main>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% load static %}
+
+<div class="project-card">
+    <div class="project-card-header-title">
+        <div class="project-card-header">
+            <div class="project-owner-grid">
+                {% if project.owner.profile.avatar %}
+                    <img src="{{ project.owner.profile.avatar.url }}" alt="Аватар" class="avatar">
+                {% else %}
+                    <img src="{% static 'images/default-avatar.png' %}" alt="Аватар по умолчанию" class="avatar">
+                {% endif %}
+
+                <div class="project-owner">
+                    <a href="{% url 'projects:project_detail' project.pk %}">
+                        {% if project.owner.get_full_name %}
+                            {{ project.owner.get_full_name }}
+                        {% else %}
+                            {{ project.owner.username }}
+                        {% endif %}
+                    </a>
+                    <small class="project-date">{{ project.created_at|date:"d.m.Y" }}</small>
+                </div>
+            </div>
+            {% if user.is_authenticated %}
+                <button type="button"
+                        class="project-fav-btn {% if user in project.favorited_by.all %}is-active{% endif %}"
+                        data-project-id="{{ project.id }}">
+                    {% include 'includes/svg/heart.html' %}
+                </button>
+            {% endif %}
+        </div>
+
+        <h3 class="project-card-title"><a href="{% url 'projects:project_detail' project.pk %}">{{ project.name }}</a>
+        </h3>
+    </div>
+
+    <p class="project-card-description">{{ project.description|truncatechars:150 }}</p>
+
+    <div class="project-card-footer">
+    <span class="project-status-black">
+        {% if project.status == 'open' %}Открыт{% else %}Закрыт{% endif %}
+    </span>
+
+        <div style="display: flex; align-items: center; gap: 15px;">
+        <span style="color: #6B7280; font-size: 14px; display: flex; align-items: center; gap: 5px;">
+            {% include 'includes/svg/users.html' %}
+            {{ project.participants.count }} {% if project.participants.count == 1 %}
+            участник{% elif project.participants.count > 1 and project.participants.count < 5 %}участника{% else %}
+            участников{% endif %}
+        </span>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Избранное{% endblock %}
+
+{% block page_id %}favorites{% endblock %}
+{% block content %}
+    <main class="project-container">
+        <div class="project-header">
+            <h1 class="project-title">Избранные проекты</h1>
+            <p class="project-subtitle">Проекты, которые вас заинтересовали</p>
+        </div>
+
+        <div class="projects-grid">
+            {% for project in projects %}
+                {% include 'includes/project-card.html' %}
+                {% empty %}
+                {% url 'projects:create_project' as create_url %}
+                {% include 'includes/empty-project-card.html' with empty_title="Проектов пока нет" empty_message="Будь первым, кто добавит свой проект!" button_link=create_url button_text="Создать проект" %}
+            {% endfor %}
+        </div>
+    </main>
+{% endblock %}

@@ -10,14 +10,12 @@
             <p class="project-subtitle">Найдите единомышленников для вашего проекта</p>
         </div>
 
-        <div class="participants-filter"
-             style="margin-bottom: 30px; text-align: center; gap: 10px; display: flex; justify-content: center;">
-            <a href="?sort=new" class="black-button"
-               style="{% if sort_by != 'name' %}background-color: var(--accent);{% else %}background-color: gray;{% endif %}">
+        <div class="participants-filter" style="margin-bottom: 20px; text-align: center;">
+            <a href="?sort_by=new" class="black-button {% if sort_by == 'new' or not sort_by %}is-active{% endif %}">
                 Сначала новые
             </a>
-            <a href="?sort=name" class="black-button"
-               style="{% if sort_by == 'name' %}background-color: var(--accent);{% else %}background-color: gray;{% endif %}">
+            <a href="?sort_by=name" class="black-button {% if sort_by == 'name' %}is-active{% endif %}"
+               style="margin-left: 10px;">
                 По алфавиту
             </a>
         </div>

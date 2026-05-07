@@ -4,6 +4,19 @@
 <head>
     <meta charset="UTF-8"/>
     <title>{% block title %}TeamFinder{% endblock %}</title>
+    <style>
+        .participants-filter .black-button {
+            background-color: #f0f2f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .participants-filter .black-button.is-active {
+            background-color: #6a2cff;
+            color: white;
+            border: none;
+        }
+    </style>
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" href="{% static 'css/header.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">

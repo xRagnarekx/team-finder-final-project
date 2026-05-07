@@ -29,8 +29,8 @@ TeamFinder — это веб-приложение, созданное для р�
 
 1. **Клонируйте репозиторий на свой компьютер:**
    ```bash
-   git clone <ссылка_на_твой_репозиторий>
-   cd <название_папки_проекта>
+   git clone <https://github.com/xRagnarekx/team-finder-final-project.git>
+   cd <Final>
 
 Автор:
 Вегелин Алексей

@@ -13,5 +13,4 @@ labels = {
     'description': 'Описание',
     'github_url': 'Ссылка на GitHub',
     'image': 'Обложка проекта',
-    'status': 'Статус',
 }

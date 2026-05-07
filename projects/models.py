@@ -9,12 +9,12 @@ class Project(models.Model):
         ('open', 'Открыт'),
         ('closed', 'Закрыт'),
     ]
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_projects')
-    name = models.CharField(max_length=200)
-    description = models.TextField()
-    github_url = models.URLField(max_length=200, blank=True, null=True)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='open')
-    image = models.ImageField(upload_to='projects/', blank=True, null=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_projects', verbose_name='Автор')
+    name = models.CharField('Название', max_length=200)
+    description = models.TextField('Описание')
+    github_url = models.URLField('Ссылка на GitHub', max_length=200, blank=True, null=True)
+    status = models.CharField('Статус', max_length=10, choices=STATUS_CHOICES, default='open')
+    image = models.ImageField('Обложка проекта', upload_to='projects/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     participants = models.ManyToManyField(User, related_name='participated_projects', blank=True)
 

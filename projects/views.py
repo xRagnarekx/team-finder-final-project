@@ -1,17 +1,24 @@
+from http import HTTPStatus
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.core.paginator import Paginator
-from .models import Project
+
+from .models import Project, STATUS_CLOSED
 from .forms import ProjectForm
+
+
+def paginate_queryset(request, queryset, per_page=12):
+    paginator = Paginator(queryset, per_page)
+    page_number = request.GET.get('page')
+    return paginator.get_page(page_number)
 
 
 def index(request):
     projects_list = Project.objects.all().order_by('-created_at')
 
-    paginator = Paginator(projects_list, 12)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    page_obj = paginate_queryset(request, projects_list, 12)
 
     return render(request, 'projects/project_list.html', context={'page_obj': page_obj})
 
@@ -60,11 +67,11 @@ def complete_project(request, pk):
     project = get_object_or_404(Project, pk=pk, owner=request.user)
 
     if request.method == 'POST':
-        project.status = 'closed'
+        project.status = STATUS_CLOSED
         project.save()
         return JsonResponse({'status': 'success'})
 
-    return JsonResponse({'status': 'error'}, status=400)
+    return JsonResponse({'status': 'error'}, status=HTTPStatus.BAD_REQUEST)
 
 
 @login_required
@@ -78,7 +85,7 @@ def toggle_favorite(request, pk):
     if request.method == 'POST':
         project = get_object_or_404(Project, pk=pk)
 
-        if request.user in project.favorited_by.all():
+        if project.favorited_by.filter(id=request.user.id).exists():
             project.favorited_by.remove(request.user)
             status = 'removed'
         else:
@@ -87,17 +94,18 @@ def toggle_favorite(request, pk):
 
         return JsonResponse({'status': status})
 
-    return JsonResponse({'error': 'Invalid request'}, status=400)
+    return JsonResponse({'error': 'Invalid request'}, status=HTTPStatus.BAD_REQUEST)
 
 
 @login_required
 def participate_project(request, pk):
     project = get_object_or_404(Project, pk=pk)
     if request.method == 'POST':
-        if request.user in project.participants.all():
+        if project.participants.filter(id=request.user.id).exists():
             project.participants.remove(request.user)
             return JsonResponse({'status': 'removed'})
-        else:
-            project.participants.add(request.user)
-            return JsonResponse({'status': 'added'})
-    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+        project.participants.add(request.user)
+        return JsonResponse({'status': 'added'})
+
+    return JsonResponse({'error': 'Invalid request'}, status=HTTPStatus.BAD_REQUEST)

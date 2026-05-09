@@ -1,5 +1,6 @@
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.urls import path, reverse_lazy
+
 from . import views
 
 app_name = 'users'

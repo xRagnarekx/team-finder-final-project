@@ -3,17 +3,24 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+MAX_LENGTH_NAME = 200
+MAX_LENGTH_URL = 200
+MAX_LENGTH_STATUS = 10
+
+STATUS_OPEN = 'open'
+STATUS_CLOSED = 'closed'
+STATUS_CHOICES = [
+    (STATUS_OPEN, 'Открыт'),
+    (STATUS_CLOSED, 'Закрыт'),
+]
+
 
 class Project(models.Model):
-    STATUS_CHOICES = [
-        ('open', 'Открыт'),
-        ('closed', 'Закрыт'),
-    ]
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_projects', verbose_name='Автор')
-    name = models.CharField('Название', max_length=200)
+    name = models.CharField('Название', max_length=MAX_LENGTH_NAME)
     description = models.TextField('Описание')
-    github_url = models.URLField('Ссылка на GitHub', max_length=200, blank=True, null=True)
-    status = models.CharField('Статус', max_length=10, choices=STATUS_CHOICES, default='open')
+    github_url = models.URLField('Ссылка на GitHub', max_length=MAX_LENGTH_URL, blank=True, null=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_projects', verbose_name='Автор')
+    status = models.CharField('Статус', max_length=MAX_LENGTH_STATUS, choices=STATUS_CHOICES, default=STATUS_OPEN)
     image = models.ImageField('Обложка проекта', upload_to='projects/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     participants = models.ManyToManyField(User, related_name='participated_projects', blank=True)
